@@ -1,0 +1,70 @@
+{
+  "name": "server",
+  "description": "The basics to be applied to a server of any kind",
+  "default_attributes": {
+    "firewall" : {
+      "allow_ssh" : true
+    },
+    "apt" : {
+      "unattended_upgrades" : {
+        "enable" : true,
+        "allowed_origins" : [
+          "${distro_id} stable",
+          "${distro_id} ${distro_codename}-security"
+        ],
+        "automatic_reboot" : true,
+        "auto_fix_interrupted_dpkg" : true
+      }
+    },
+    "authorization": {
+      "sudo": {
+        "groups": ["sysadmin"],
+        "users": ["deploy"],
+        "passwordless": true
+      }
+    },
+    "monit": {
+      "notify_emails" : ["user@example.com"],
+      "enable_emails" : false,
+      "mailserver" : {
+        "host" : "your-server",
+        "port" : "587",
+        "username" : "yourusername",
+        "password" : "yourpassword",
+        "hostname" : "yourhostname"
+      },
+      "web_interface" : {
+        "allow" : ["yourusername","yourpassword"]
+      }
+    },
+    "monit_address" : "monit.devops.local",
+    "openssh" : {
+      "server" : {
+        "password_authentication" : "no",
+        "challenge_response_authentication" : "no",
+        "permit_empty_passwords" : "no",
+        "use_pam" : "no",
+        "x11_forwarding" : "no",
+        "permit_root_login" : "yes"
+      }
+    }
+  },
+  "json_class": "Chef::Role",
+  "run_list": [
+    "recipe[apt::default]",
+    "recipe[ufw::default]",
+    "recipe[openssh::default]",
+    "recipe[fail2ban::default]",
+    "recipe[rdr_sudo_wrapper::default]",
+    "recipe[rdr_users_wrapper::default]",
+    "recipe[apt::unattended-upgrades]",
+    "recipe[ntp::default]",
+    "recipe[locale::default]",
+    "recipe[monit-tlq::default]",
+    "recipe[monit_configs-tlq::system]"
+  ],
+  "chef_type": "role",
+  "override_attributes": {
+  }
+}
+

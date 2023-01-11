@@ -1,0 +1,16 @@
+{
+   "name": "postgres-server",
+   "description": "A Postgres database server",
+   "default_attributes": {
+      "postgresql" : {
+        "version" : "13"
+      }
+   },
+   "json_class": "Chef::Role",
+   "run_list": [
+      "role[server]",
+      "recipe[rdr_postgresql_wrapper::default]",
+      "recipe[monit_configs-tlq::postgres]"
+   ],
+   "chef_type": "role"
+}
